@@ -38,10 +38,16 @@ upgrade_folder() {
 ## LOGIC ##
 ###########
 
-# First checks if anything 
+# First checks if anything is failing
 check_cvp_fails
+# Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
+# Asks for which version is needed
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
+# Based of version given extracts what the release is
 release=${version::2}
+# Performs the upgrade
 cd ./tmp/upgrade || exit
 curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz
+su cvpadmin
+u
