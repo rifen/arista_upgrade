@@ -5,7 +5,7 @@
 ################
 response=${response,,}
 failure_message=$(cvpi status | grep failed:)
-amount_failed=$(echo "${failure_message: -1}")
+amount_failed=${failure_message: -1}
 
 ################
 ## FUNCTIONS ##
@@ -22,11 +22,17 @@ check_cvp_fails() {
 }
 
 upgrade_folder() {
-if ! [[ -f /tmp/upgrade ]]; then
-  mkdir /tmp/upgrade
-else
-  rm -rf /tmp/upgrade/*
-fi
+  if ! [[ -f /tmp/upgrade ]]; then
+    mkdir /tmp/upgrade
+  else
+    read -r -p "Do you want to remove everything in /tmp/upgrade? (y/n) " response
+    if [[ "$response" =~ ^(no|n)$ ]]; then
+      echo -e "Exitting CloudVision Portal upgrade script"
+      exit 1
+    else
+      rm -rf /tmp/upgrade/*
+    fi
+  fi
 }
 ###########
 ## LOGIC ##
@@ -36,6 +42,6 @@ fi
 check_cvp_fails
 upgrade_folder
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
-release=${echo ${version::2}}
-cd /tmp/upgrade
-curl -o cvp-upgrade-${version}.tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/${release}/${version}/cvp-upgrade-${version}.tgz
+release=${version::2}
+cd ./tmp/upgrade || exit
+curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz
