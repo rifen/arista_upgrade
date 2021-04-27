@@ -22,12 +22,12 @@ check_cvp_fails() {
 }
 
 upgrade_folder() {
-  if ! [[ -f /tmp/upgrade ]]; then
+  if ! [[ -e /tmp/upgrade ]]; then
     su -c "mkdir /tmp/upgrade" cvp
   else
-    read -r -p "Do you want to remove everything in /tmp/upgrade? (y/n) " response
+    read -r -p "Do you want to remove everything in /tmp/upgrade? (y/n): " response
     if [[ "$response" =~ ^(no|n)$ ]]; then
-      echo -e "Exitting CloudVision Portal upgrade script"
+      echo -e "Exitting CloudVision Portal upgrade script *You must remove everything from /tmp/upgrade to upgrade*"
       exit 1
     else
       rm -rf /tmp/upgrade/*
