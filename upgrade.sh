@@ -48,6 +48,6 @@ read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 release=${version::2}
 # Performs the upgrade
 cd ./tmp/upgrade || exit
-curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz
-su cvpadmin
-u
+curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz || exit
+su -c upgrade cvpadmin || exit
+u || quit
