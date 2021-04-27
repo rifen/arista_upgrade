@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Check to make sure the cvp user is the user and if 
+if ! [[ $USER == "cvp" ]]; then
+echo -en "Switching to the cvp user."
+  su cvp
+else
+  echo -en "This script needs to execute as the cvp user if that doesn't exist this won't work."
+  exit 1
+fi
+
 ################
 ## VARIABLES ##
 ################
@@ -47,7 +56,7 @@ read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 # Based of version given extracts what the release is
 release=${version::2}
 # Performs the upgrade
-cd ./tmp/upgrade || exit
-curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz || exit
-su -c upgrade cvpadmin || exit
+cd ./tmp/upgrade || exit 1
+curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz || exit 1
+su -c upgrade cvpadmin || exit 1
 u || quit
