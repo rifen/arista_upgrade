@@ -45,10 +45,14 @@ upgrade_folder
 # Asks for which version is needed
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 # Confirmation
-read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n)" response
+read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
 if [[ "$response" =~ ^(no|n)$ ]]; then
       echo -e "Exitting CloudVision Portal upgrade script"
       exit 1
+elif [[ "$response" =~ ^(yes|y)$ ]]; then
+      echo -e "Upgrading to ${version}"
+else
+      echo -e "Invalid input only *yes | y | no | n* allowed"
 fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
