@@ -45,14 +45,21 @@ upgrade_folder
 # Asks for which version is needed
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 # Confirmation
-read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version} ?" response
+read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n)" response
 if [[ "$response" =~ ^(no|n)$ ]]; then
       echo -e "Exitting CloudVision Portal upgrade script"
       exit 1
 fi
+# Run a backup before upgrading
+echo -e "Running backups first..."
+su -c "./cvpi/tools/backup.py" root || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
+wait
+su -c "./cvpi/tools/backup.sh" root || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+echo -e "Backup complete"
+
 # Based of version given extracts what the release is
 release=${version::2}
 # Performs the upgrade
-cd su -c "./tmp/upgrade" || echo -en "Couldn't find the upgrade directory." && exit 1
-su -c "curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" && exit 1
+cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
+su -c "curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
 su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
