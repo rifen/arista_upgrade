@@ -53,12 +53,13 @@ elif [[ "$response" =~ ^(yes|y)$ ]]; then
       echo -e "Upgrading to ${version}"
 else
       echo -e "Invalid input only *yes | y | no | n* allowed"
+      exit 1
 fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
-su -c "./cvpi/tools/backup.py" root || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
+./cvpi/tools/backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
 wait
-su -c "./cvpi/tools/backup.sh" root || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
