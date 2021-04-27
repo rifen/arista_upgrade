@@ -50,6 +50,12 @@ check_cvp_fails
 upgrade_folder
 # Asks for which version is needed
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
+# Confirmation
+read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version} ?" response
+if [[ "$response" =~ ^(no|n)$ ]]; then
+      echo -e "Exitting CloudVision Portal upgrade script"
+      exit 1
+fi
 # Based of version given extracts what the release is
 release=${version::2}
 # Performs the upgrade
