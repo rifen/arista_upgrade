@@ -63,9 +63,10 @@ fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
 cd /cvpi/tools
-sudo su -c "./backup.py" || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit
 wait
-./backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit
+./backup.py > /dev/null 2>&1 || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit
+wait
+./backup.sh > /dev/null 2>&1 || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
