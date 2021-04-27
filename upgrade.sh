@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# Check to make sure the cvp user is the user and if 
+# Check to make sure the cvp user is the user and if the user doesn't 
 if ! [[ $USER == "cvp" ]]; then
-echo -en "Switching to the cvp user."
-  su cvp
-else
-  echo -en "This script needs to execute as the cvp user if that doesn't exist this won't work."
-  exit 1
+  echo -en "Using the cvp user."
+  su cvp || echo -en "This script needs to execute as the cvp user if that doesn't exist this won't work." && exit 1
 fi
 
 ################
