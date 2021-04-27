@@ -58,13 +58,14 @@ fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
 cd /cvpi/tools
-./backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit
+sudo su -c "./backup.py" || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit
 wait
 ./backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
 release=${version::2}
+
 # Performs the upgrade
 cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
 su -c "curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
