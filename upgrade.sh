@@ -57,9 +57,9 @@ else
 fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
-./cvpi/tools/backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
+./cvpi/tools/backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit
 wait
-./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
