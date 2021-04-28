@@ -44,7 +44,7 @@ upgrade_folder() {
 ###########
 
 # First checks if anything is failing
-if [[ -n failure_message]]; then
+if [[ -n "$failure_message" ]]; then
   check_cvp_fails
 fi
 # Looks for the /tmp/upgrade folder and creates or clears it.
@@ -64,7 +64,7 @@ else
 fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
-cd /cvpi/tools
+cd /cvpi/tools || echo -en "Couldn't find /cvpi/tools" && exit 1
 source backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
 source backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
@@ -74,6 +74,6 @@ release=${version::2}
 
 # Performs the upgrade
 cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
-su -c "curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
+su -c "curl -o cvp-upgrade-""${version}"".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/""${release}""/""${version}""/cvp-upgrade-""${version}"".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
 su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
 exit 0
