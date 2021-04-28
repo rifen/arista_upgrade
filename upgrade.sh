@@ -43,7 +43,7 @@ upgrade_folder() {
 ## LOGIC ##
 ###########
 
-# First checks if anything is failing
+# First checks if anything is failing if failure message grep isn't empty
 if [[ -n "$failure_message" ]]; then
   check_cvp_fails
 else
@@ -67,8 +67,8 @@ fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
 cd /cvpi/tools || echo -en "Couldn't find /cvpi/tools" && exit 1
-source backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
-source backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+./backup.py || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
+./backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
