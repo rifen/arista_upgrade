@@ -66,8 +66,8 @@ else
 fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
-cd /cvpi/tools || echo -en "Couldn't find /cvpi/tools" && exit 1
 timeout 120s su -c "cvpi backup cvp &>/dev/null &" cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+cd /cvpi/tools || echo -en "Couldn't find /cvpi/tools" && exit 1
 ./backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
