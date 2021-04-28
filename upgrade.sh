@@ -44,7 +44,9 @@ upgrade_folder() {
 ###########
 
 # First checks if anything is failing
-check_cvp_fails
+if [[ -n failure_message]]; then
+  check_cvp_fails
+fi
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 # Asks for which version is needed
