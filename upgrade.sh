@@ -63,8 +63,8 @@ fi
 # Run a backup before upgrading
 echo -e "Running backups first..."
 cd /cvpi/tools
-. backup.py > /dev/null 2>&1 || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
-. backup.sh > /dev/null 2>&1 || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+source backup.py & || echo -en "Couldn't execute ./cvpi/tools/backup.py backup completely" && exit 1
+source backup.sh & || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
 # Based of version given extracts what the release is
@@ -74,3 +74,4 @@ release=${version::2}
 cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
 su -c "curl -o cvp-upgrade-"${version}".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/"${release}"/"${version}"/cvp-upgrade-"${version}".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
 su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
+exit 0
