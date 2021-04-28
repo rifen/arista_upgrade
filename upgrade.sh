@@ -46,6 +46,8 @@ upgrade_folder() {
 # First checks if anything is failing
 if [[ -n "$failure_message" ]]; then
   check_cvp_fails
+else
+  echo -en "CVP is in good health. Continuing..."
 fi
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
