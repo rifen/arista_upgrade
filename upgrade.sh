@@ -77,8 +77,7 @@ else
 fi
 
 # Downloads the version specified
-cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
-su -c "curl -o cvp-upgrade-""${version}"".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/""${release}""/""${version}""/cvp-upgrade-""${version}"".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
+su -c "curl -o /tmp/upgrade/cvp-upgrade-""${version}"".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/""${release}""/""${version}""/cvp-upgrade-""${version}"".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
 
 # Performs Upgrade
 if  [[ -e "/tmp/upgrade/cvp-upgrade-${version}" ]]; then
