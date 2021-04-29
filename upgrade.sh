@@ -49,10 +49,22 @@ if [[ -n "$failure_message" ]]; then
 else
   echo -en "CVP is in good health. Continuing..."
 fi
+
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
+
 # Asks for which version is needed
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
+
+# Run a backup before upgrading
+echo -e "Running backups first..."
+su -c "timeout 120s cvpi backup cvp" cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+echo -e "Backup complete"
+
+# Based of version given extracts what the release is
+release=${version::2}
+
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
 if [[ "$response" =~ ^(no|n)$ ]]; then
@@ -64,17 +76,12 @@ else
       echo -e "Invalid input only *yes | y | no | n* allowed"
       exit 1
 fi
-# Run a backup before upgrading
-echo -e "Running backups first..."
-timeout 120s su -c "cvpi backup cvp" cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
-./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
-echo -e "Backup complete"
 
-# Based of version given extracts what the release is
-release=${version::2}
-
-# Performs the upgrade
+# Downloads the version specified
 cd su -c "./tmp/upgrade" cvp || echo -en "Couldn't find the upgrade directory." && exit 1
 su -c "curl -o cvp-upgrade-""${version}"".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/""${release}""/""${version}""/cvp-upgrade-""${version}"".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
-su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
-exit 0
+
+# Performs Upgrade
+if  [[ -e "/tmp/upgrade/cvp-upgrade-${version}" ]]; then
+  su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
+fi
