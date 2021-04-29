@@ -11,6 +11,17 @@ fi
 response=${response,,}
 failure_message=$(su -c "cvpi status" cvp | grep failed:)
 amount_failed=${failure_message: -1}
+# Bucket Variables
+awsAccess="${AWS_ACCESS_KEY}"
+awsSecret="${AWS_SECRET_KEY}"
+file='images/cvp-upgrade-2020.3.1.tgz'
+bucket='cvp-backup-test'
+resource="/${bucket}/${file}"
+contentType="application/x-compressed-tar"
+date=$(date +"%a, %d %b %Y %T %z")
+string="GET\n\n${contentType}\n${date}\n${resource}"
+signature=$(echo -en "${string}" | openssl sha1 -hmac "$awsSecret" -binary | base64)
+
 
 ################
 ## FUNCTIONS ##
@@ -50,6 +61,11 @@ else
   echo -en "CVP is in good health. Continuing..."
 fi
 
+# Asks for which version is needed
+read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
+# Based of version given extracts what the release is
+# release=${version::2}
+
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
@@ -59,10 +75,6 @@ upgrade_folder
 # . /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 # echo -e "Backup complete"
 
-# Asks for which version is needed
-read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
-# Based of version given extracts what the release is
-release=${version::2}
 
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
@@ -77,9 +89,13 @@ else
 fi
 
 # Downloads the version specified
-su -c "curl -o /tmp/upgrade/cvp-upgrade-""${version}"".tgz https://www.arista.com/custom_data/aws3-explorer/download-s3-file.php?f=/support/download/CloudVision/CloudVision%20Portal/Active%20Releases/""${release}""/""${version}""/cvp-upgrade-""${version}"".tgz" || echo -en "Failed to curl the version ${version} from release ${release}" cvp && exit 1
+curl -H "Host: ${bucket}.s3.amazonaws.com" \
+-H "Date: ${date}" \
+-H "Content-Type: ${contentType}" \
+-H "Authorization: AWS ${awsAccess}:${signature}" \
+https://${bucket}.s3.amazonaws.com/${file} || echo -en "Failed to curl the version ""${version}""" from s3 bucket && exit 1
 
 # Performs Upgrade
-if  [[ -e "/tmp/upgrade/cvp-upgrade-${version}" ]]; then
+if  [[ -e "cvp-upgrade-*.tgz" ]]; then
   su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
 fi
