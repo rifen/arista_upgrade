@@ -53,15 +53,14 @@ fi
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
-# Asks for which version is needed
-read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
-
 # Run a backup before upgrading
 echo -e "Running backups first..."
-su -c "timeout 120s cvpi backup cvp" cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+su -c "timeout 120s --preserve-status --verbose cvpi backup cvp &" cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
 ./cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
+# Asks for which version is needed
+read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 # Based of version given extracts what the release is
 release=${version::2}
 
