@@ -89,7 +89,7 @@ fi
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
 # Downloads the version specified
-curl -v -i -H "Host: ${bucket}.s3.amazonaws.com" \
+curl --H "Host: ${bucket}.s3.amazonaws.com" \
 -H "Date: ${date}" \
 -H "Content-Type: ${contentType}" \
 -H "Authorization: AWS ${awsAccess}:${signature}" \
