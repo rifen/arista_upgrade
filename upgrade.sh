@@ -89,11 +89,11 @@ fi
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory" && exit 1
 # Downloads the version specified
-curl -H "Host: ${bucket}.s3.amazonaws.com" \
+curl -v -i -H "Host: ${bucket}.s3.amazonaws.com" \
 -H "Date: ${date}" \
 -H "Content-Type: ${contentType}" \
 -H "Authorization: AWS ${awsAccess}:${signature}" \
-https://${bucket}.s3.amazonaws.com/${file} || echo -en "Failed to curl the version ""${version}""" from s3 bucket && exit 1
+"https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to curl the version ""${version}""" from s3 bucket && exit 1
 
 # # Performs Upgrade
 # if  [[ -e "cvp-upgrade-*.tgz" ]]; then
