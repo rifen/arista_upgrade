@@ -75,7 +75,6 @@ upgrade_folder
 # . /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 # echo -e "Backup complete"
 
-
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
 if [[ "$response" =~ ^(no|n)$ ]]; then
@@ -87,7 +86,8 @@ else
       echo -e "Invalid input only *yes | y | no | n* allowed"
       exit 1
 fi
-
+# Change to upgrade directory
+cd /tmp/upgrade
 # Downloads the version specified
 curl -H "Host: ${bucket}.s3.amazonaws.com" \
 -H "Date: ${date}" \
@@ -95,7 +95,7 @@ curl -H "Host: ${bucket}.s3.amazonaws.com" \
 -H "Authorization: AWS ${awsAccess}:${signature}" \
 https://${bucket}.s3.amazonaws.com/${file} || echo -en "Failed to curl the version ""${version}""" from s3 bucket && exit 1
 
-# Performs Upgrade
-if  [[ -e "cvp-upgrade-*.tgz" ]]; then
-  su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
-fi
+# # Performs Upgrade
+# if  [[ -e "cvp-upgrade-*.tgz" ]]; then
+#   su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
+# fi
