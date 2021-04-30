@@ -14,7 +14,8 @@ amount_failed=${failure_message: -1}
 # Bucket Variables
 awsAccess="${AWS_ACCESS_KEY}"
 awsSecret="${AWS_SECRET_KEY}"
-file='images/cvp-upgrade-2020.3.1.tgz'
+filename='cvp-upgrade-2020.3.1.tgz'
+file="images/${filename}"
 bucket='cvp-backup-test'
 resource="/${bucket}/${file}"
 contentType="application/x-compressed-tar"
@@ -89,10 +90,10 @@ fi
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
 # Downloads the version specified
-curl --H "Host: ${bucket}.s3.amazonaws.com" \
--H "Date: ${date}" \
--H "Content-Type: ${contentType}" \
--H "Authorization: AWS ${awsAccess}:${signature}" \
+wget -O ${file} --header="Host: ${bucket}.s3.amazonaws.com" \
+--header="Date: ${date}" \
+--header="Content-Type: ${contentType}" \
+--header="Authorization: AWS ${awsAccess}:${signature}" \
 "https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to curl the version ""${version}""" from s3 bucket
 
 # # Performs Upgrade
