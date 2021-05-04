@@ -69,11 +69,20 @@ file="images/${filename}"
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
-# # Run a backup before upgrading
-# echo -e "Running backups first..."
-# timeout --preserve-status 120s cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+# Run a backup before upgrading
+echo -e "Running backups first..."
+timeout --preserve-status 300s cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
 # . /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
-# echo -e "Backup complete"
+echo -e "Backup complete"
+
+# Change to upgrade directory
+cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
+# Downloads the version specified
+wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
+--header="Date: ${date}" \
+--header="Content-Type: ${contentType}" \
+--header="Authorization: AWS ${awsAccess}:${signature}" \
+"https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}""" from the s3 bucket
 
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
@@ -86,15 +95,6 @@ else
       echo -e "Invalid input only *yes | y | no | n* allowed"
       exit 1
 fi
-# Change to upgrade directory
-cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
-# Downloads the version specified
-wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
---header="Date: ${date}" \
---header="Content-Type: ${contentType}" \
---header="Authorization: AWS ${awsAccess}:${signature}" \
-"https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}""" from the s3 bucket
-
 # Performs Upgrade
 if  [[ -e "cvp-upgrade-*.tgz" ]]; then
   su -c "upgrade" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
