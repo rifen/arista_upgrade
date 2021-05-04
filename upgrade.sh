@@ -95,7 +95,7 @@ wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
 --header="Authorization: AWS ${awsAccess}:${signature}" \
 "https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}""" from the s3 bucket
 
-# # Performs Upgrade
-# if  [[ -e "cvp-upgrade-*.tgz" ]]; then
-#   su -c "upgrade || quit" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
-# fi
+# Performs Upgrade
+if  [[ -e "cvp-upgrade-*.tgz" ]]; then
+  su -c "upgrade" cvpadmin || exit 1 # This doesn't work but you will get into the cvpadmin prompt then you will need to press u or type upgrade
+fi
