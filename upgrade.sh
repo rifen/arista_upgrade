@@ -14,8 +14,6 @@ amount_failed=${failure_message: -1}
 # Bucket Variables
 awsAccess="${AWS_ACCESS_KEY}"
 awsSecret="${AWS_SECRET_KEY}"
-filename='cvp-upgrade-2020.3.1.tgz'
-file="images/${filename}"
 bucket='cvp-backup-test'
 resource="/${bucket}/${file}"
 contentType="application/x-compressed-tar"
@@ -66,7 +64,8 @@ fi
 read -r -p "Enter the version of CloudVision Portal(eg. 2021.1.0): " version
 # Based of version given extracts what the release is
 # release=${version::2}
-
+filename="cvp-upgrade-${version}.tgz"
+file="images/${filename}"
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
@@ -90,7 +89,7 @@ fi
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
 # Downloads the version specified
-wget -O ${filename} --header="Host: ${bucket}.s3.amazonaws.com" \
+wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
 --header="Date: ${date}" \
 --header="Content-Type: ${contentType}" \
 --header="Authorization: AWS ${awsAccess}:${signature}" \
