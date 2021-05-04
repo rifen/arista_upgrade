@@ -71,7 +71,7 @@ upgrade_folder
 
 # Run a backup before upgrading
 echo -e "Running backups first..."
-timeout --preserve-status 300s cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
 # . /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
 echo -e "Backup complete"
 
