@@ -30,4 +30,4 @@ cd $default_dir || exit
 unzip -j ${filename}
 eos=$(ls $default_dir | grep eos)
 tar=$(ls -Art $default_dir | tail -n 1)
-echo -e "You must now run: cvpi restore cvp $tar $eos"
+echo -e "For the latest restore run: cvpi restore cvp $tar $eos"
