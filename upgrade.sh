@@ -1,4 +1,12 @@
 #!/bin/bash
+################
+##       TO-DO     ##
+################
+# Backup Portion to work
+# 
+# Maybe kick off the upgrade at the end by calling a script? Greg mentioned it.
+# Use arguments instead of input
+
 
 if [[ "$(whoami)" != root ]]; then
   echo "Only user root can run this script."
@@ -69,11 +77,12 @@ file="images/${filename}"
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
-# Run a backup before upgrading
-# echo -e "Running backups first..."
-# timeout --preserve-status 300s cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
-# # . /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
-# echo -e "Backup complete"
+Run a backup before upgrading
+echo -e "Running backups first..."
+cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+# shellcheck disable=SC1091
+source /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+echo -e "Backup complete"
 
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
@@ -82,7 +91,7 @@ wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
 --header="Date: ${date}" \
 --header="Content-Type: ${contentType}" \
 --header="Authorization: AWS ${awsAccess}:${signature}" \
-"https://${bucket}.s3.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}"" from the s3 bucket" && exit 1
+"https://${bucket}.s3-us-west-2.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}"" from the s3 bucket" && exit 1
 
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
