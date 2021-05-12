@@ -77,12 +77,12 @@ file="images/${filename}"
 # Looks for the /tmp/upgrade folder and creates or clears it.
 upgrade_folder
 
-Run a backup before upgrading
-echo -e "Running backups first..."
-cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
-# shellcheck disable=SC1091
-source /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
-echo -e "Backup complete"
+# Run a backup before upgrading
+# echo -e "Running backups first..."
+# cvpi backup cvp || echo -en "Couldn't execute cvpi backup cvp" && exit 1
+# # shellcheck disable=SC1091
+# source /cvpi/tools/backup.sh || echo -en "Couldn't execute ./cvpi/tools/backup.sh backup completely" && exit 1
+# echo -e "Backup complete"
 
 # Change to upgrade directory
 cd /tmp/upgrade || echo -en "No /tmp/upgrade directory"
