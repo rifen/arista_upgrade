@@ -16,7 +16,7 @@ today=$(date +"%Y-%m-%d")
 slack_message() {
   # Slack Function that sends a message to sdn-alerts
   message="$1"
-  slack_web_url="https://hooks.slack.com/services/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"
+  slack_web_url="" # NEED TO GET SLACK WEB URL
   escapedText=$(echo "$message" | sed 's/"/\"/g' | sed "s/'/\'/g")
   json="{\"text\": \"$escapedText\"}"
   response=$(curl -i -H "Content-Type: application/json" -d "$json" "$slack_web_url")
