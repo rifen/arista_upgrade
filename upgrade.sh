@@ -91,7 +91,7 @@ wget -O "${filename}" --header="Host: ${bucket}.s3.amazonaws.com" \
 --header="Date: ${date}" \
 --header="Content-Type: ${contentType}" \
 --header="Authorization: AWS ${awsAccess}:${signature}" \
-"https://${bucket}.s3-us-west-2.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}"" from the s3 bucket" && exit 1
+"https://${bucket}.s3.us-west-2.amazonaws.com/${file}" || echo -en "Failed to get the version ""${version}"" from the s3 bucket" && exit 1
 
 # Confirmation
 read -r -p "Ready to upgrade from ${CVP_VERSION} to ${version}? (y/n):" response
